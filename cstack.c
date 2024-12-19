@@ -54,6 +54,8 @@ void stack_free(const hstack_t hstack)
             int count=0;
             stack_entry_t*ptr=NULL;
             ptr= (stack_entry_t*) malloc(((g_table.size-1)*sizeof(stack_entry_t)));
+            if(ptr!=NULL)
+            {
             for(unsigned int j=0;j<g_table.size;j++)
             {
                 if(g_table.entries[j].reserved== hstack)
@@ -72,10 +74,17 @@ void stack_free(const hstack_t hstack)
             free(g_table.entries);
             g_table.size=g_table.size-1;
             g_table.entries=ptr;
-            if(g_table.size==0)
-            {
-            g_table.entries->reserved=-1;
+            }else{
+            while(g_table.entries[i].sizeNodes!=0){
+               struct node*ptr=g_table.entries[i].stack->prev;
+                    free(g_table.entries[i].stack);
+                    g_table.entries[i].stack=ptr;
+                    g_table.entries[i].sizeNodes=g_table.entries[i].sizeNodes-1;
+            } 
+            free(g_table.entries);
+            g_table.size=g_table.size-1;   
             }
+
         }
     }
 }
